@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DFM</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .dashboard-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+            padding-top: 80px;
+        }
+        
+        .dashboard-header {
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .dashboard-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .dashboard-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .dashboard-brand h1 {
+            color: #FFD700;
+            font-size: 1.5rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-balance {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-menu-btn {
+            background: none;
+            border: none;
+            color: #FFD700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            min-width: 200px;
+            display: none;
+        }
+        
+        .user-dropdown.active {
+            display: block;
+        }
+        
+        .user-dropdown a {
+            display: block;
+            color: #FFD700;
+            text-decoration: none;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+        
+        .user-dropdown a:hover {
+            color: #FFA500;
+        }
+        
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-card {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 1.5rem;
+        }
+        
+        .balance-amount {
+            font-size: 2.5rem;
+            color: #FFD700;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .balance-label {
+            color: #FFA500;
+            font-size: 0.9rem;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .action-btn {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: block;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+        }
+        
+        .niveis-section {
+            margin-bottom: 2rem;
+        }
+        
+        .niveis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .nivel-card {
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .nivel-card:hover {
+            border-color: #FFD700;
+            transform: translateY(-5px);
+        }
+        
+        .nivel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .nivel-numero {
+            font-size: 1.5rem;
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .nivel-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-ativo {
+            background: rgba(81, 207, 102, 0.2);
+            color: #51cf66;
+            border: 1px solid rgba(81, 207, 102, 0.3);
+        }
+        
+        .status-vencido {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+        
+        .nivel-info {
+            display: grid;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .nivel-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.25rem 0;
+        }
+        
+        .nivel-info-label {
+            color: #FFA500;
+        }
+        
+        .nivel-info-value {
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .transacoes-section {
+            margin-bottom: 2rem;
+        }
+        
+        .transacao-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            transition: background 0.3s ease;
+        }
+        
+        .transacao-item:hover {
+            background: rgba(255, 215, 0, 0.05);
+        }
+        
+        .transacao-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .transacao-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .icon-deposito {
+            background: rgba(81, 207, 102, 0.2);
+            color: #51cf66;
+        }
+        
+        .icon-saque {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+        
+        .icon-ganho {
+            background: rgba(255, 215, 0, 0.2);
+            color: #FFD700;
+        }
+        
+        .transacao-details h4 {
+            color: #FFD700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .transacao-details p {
+            color: #FFA500;
+            font-size: 0.9rem;
+        }
+        
+        .transacao-valor {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .valor-positivo {
+            color: #51cf66;
+        }
+        
+        .valor-negativo {
+            color: #ff6b6b;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            color: #FFD700;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: #FFD700;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFD700;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        .file-upload {
+            border: 2px dashed rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            border-color: #FFD700;
+            background: rgba(255, 215, 0, 0.05);
+        }
+        
+        .file-upload input {
+            display: none;
+        }
+        
+        .file-upload i {
+            font-size: 2rem;
+            color: #FFD700;
+            margin-bottom: 1rem;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <nav class="dashboard-nav">
+                <div class="dashboard-brand">
+                    <h1>DFM Dashboard</h1>
+                </div>
+                <div class="user-info">
+                    <div class="user-balance" id="userBalance">
+                        Saldo: 400 Kz
+                    </div>
+                    <div class="user-menu">
+                        <button class="user-menu-btn" onclick="toggleUserMenu()">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="#" onclick="showProfile()">
+                                <i class="fas fa-user-circle"></i> Perfil
+                            </a>
+                            <a href="#" onclick="showReferralLink()">
+                                <i class="fas fa-share"></i> Link de Convite
+                            </a>
+                            <a href="#" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i> Sair
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main class="dashboard-content">
+            <!-- Resumo -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Saldo da Conta</h2>
+                        <div class="card-icon">
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                    </div>
+                    <div class="balance-amount" id="balanceAmount">400 Kz</div>
+                    <div class="balance-label">Saldo disponível para saque</div>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="showDepositoModal()">
+                            <i class="fas fa-plus"></i> Depositar
+                        </button>
+                        <button class="action-btn" onclick="showSaqueModal()">
+                            <i class="fas fa-minus"></i> Sacar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Níveis Ativos</h2>
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="balance-amount" id="niveisAtivos">0</div>
+                    <div class="balance-label">Níveis em atividade</div>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="showNiveisModal()">
+                            <i class="fas fa-plus"></i> Comprar Nível
+                        </button>
+                        <button class="action-btn" onclick="showGanhosModal()">
+                            <i class="fas fa-coins"></i> Ver Ganhos
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Níveis Ativos -->
+            <div class="niveis-section">
+                <h2 class="section-title">Meus Níveis</h2>
+                <div class="niveis-grid" id="niveisGrid">
+                    <!-- Níveis serão carregados via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Transações Recentes -->
+            <div class="transacoes-section">
+                <h2 class="section-title">Transações Recentes</h2>
+                <div id="transacoesList">
+                    <!-- Transações serão carregadas via JavaScript -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Depósito -->
+    <div class="modal" id="depositoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Solicitar Depósito</h3>
+                <button class="modal-close" onclick="closeModal('depositoModal')">&times;</button>
+            </div>
+            <form id="depositoForm">
+                <div class="form-group">
+                    <label for="depositoValor">Valor (Kz)</label>
+                    <input type="number" id="depositoValor" required min="1000" step="100">
+                </div>
+                <div class="form-group">
+                    <label>Comprovante de Pagamento</label>
+                    <div class="file-upload" onclick="document.getElementById('comprovanteFile').click()">
+                        <input type="file" id="comprovanteFile" accept="image/*" required>
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Clique para selecionar o comprovante</p>
+                        <p style="font-size: 0.8rem; color: #FFA500;">Formatos: JPG, PNG, PDF</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <h4 style="color: #FFD700; margin-bottom: 1rem;">Dados para Pagamento:</h4>
+                    <p style="color: #FFA500; margin-bottom: 0.5rem;"><strong>Entidade:</strong> 10116</p>
+                    <p style="color: #FFA500; margin-bottom: 0.5rem;"><strong>Referência:</strong> 942345333</p>
+                    <p style="color: #FFA500; margin-bottom: 1rem;"><strong>WhatsApp:</strong> +2449423453330</p>
+                </div>
+                <button type="submit" class="action-btn" style="width: 100%;">
+                    Enviar Solicitação
+                </button>
+                <div class="loading" id="depositoLoading">
+                    <i class="fas fa-spinner"></i> Enviando solicitação...
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Saque -->
+    <div class="modal" id="saqueModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Solicitar Saque</h3>
+                <button class="modal-close" onclick="closeModal('saqueModal')">&times;</button>
+            </div>
+            <form id="saqueForm">
+                <div class="form-group">
+                    <label for="saqueValor">Valor (Kz)</label>
+                    <input type="number" id="saqueValor" required min="3500" step="100">
+                    <small style="color: #FFA500;">Valor mínimo: 3.500 Kz</small>
+                </div>
+                <div class="form-group">
+                    <label for="saqueBanco">Banco</label>
+                    <select id="saqueBanco" required>
+                        <option value="">Selecione o banco</option>
+                        <option value="BAI">BAI</option>
+                        <option value="BFA">BFA</option>
+                        <option value="BIC">BIC</option>
+                        <option value="ATLÂNTICO">ATLÂNTICO</option>
+                        <option value="BCI">BCI</option>
+                        <option value="YETU">YETU</option>
+                        <option value="BPC">BPC</option>
+                        <option value="ECONÔMICO">ECONÔMICO</option>
+                        <option value="KEVE">KEVE</option>
+                        <option value="SOL">SOL</option>
+                        <option value="UNITEL MONEY">UNITEL MONEY</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="saqueConta">Número da Conta</label>
+                    <input type="text" id="saqueConta" required>
+                </div>
+                <button type="submit" class="action-btn" style="width: 100%;">
+                    Solicitar Saque
+                </button>
+                <div class="loading" id="saqueLoading">
+                    <i class="fas fa-spinner"></i> Enviando solicitação...
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Níveis -->
+    <div class="modal" id="niveisModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Comprar Nível</h3>
+                <button class="modal-close" onclick="closeModal('niveisModal')">&times;</button>
+            </div>
+            <div id="niveisDisponiveis">
+                <!-- Níveis disponíveis serão carregados aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Link de Convite -->
+    <div class="modal" id="referralModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Seu Link de Convite</h3>
+                <button class="modal-close" onclick="closeModal('referralModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Link para compartilhar:</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="referralLink" readonly style="flex: 1;">
+                    <button type="button" class="action-btn" onclick="copiarLink()">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 8px; padding: 1rem; margin-top: 1rem;">
+                <h4 style="color: #FFD700; margin-bottom: 0.5rem;">Como funciona:</h4>
+                <p style="color: #FFA500; font-size: 0.9rem;">
+                    • Compartilhe este link com seus amigos<br>
+                    • Quando eles se registrarem e fizerem o primeiro depósito<br>
+                    • Você receberá automaticamente 600 Kz de bônus!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html> 

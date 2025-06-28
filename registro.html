@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - DFM</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Times+New+Roman:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: radial-gradient(circle at center, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+        }
+        
+        .auth-card {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .auth-header h1 {
+            font-size: 2.5rem;
+            color: #FFD700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .auth-header p {
+            color: #FFA500;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFD700;
+            font-family: 'Times New Roman', Times, serif;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        .form-group input::placeholder {
+            color: rgba(255, 215, 0, 0.5);
+        }
+        
+        .password-toggle {
+            position: relative;
+        }
+        
+        .password-toggle i {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #FFD700;
+        }
+        
+        .form-error {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .form-success {
+            color: #51cf66;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+        }
+        
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .auth-links {
+            text-align: center;
+        }
+        
+        .auth-links a {
+            color: #FFD700;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .auth-links a:hover {
+            color: #FFA500;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .back-home {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: #FFD700;
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        
+        .back-home:hover {
+            color: #FFA500;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-home">
+        <i class="fas fa-arrow-left"></i> Voltar ao Início
+    </a>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Registro DFM</h1>
+                <p>Junte-se ao Digital Financial Market</p>
+            </div>
+
+            <form id="registroForm">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" required placeholder="seu@email.com">
+                    <div class="form-error" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="telefone">Telefone</label>
+                    <input type="tel" id="telefone" name="telefone" required placeholder="+244 123 456 789">
+                    <div class="form-error" id="telefoneError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <div class="password-toggle">
+                        <input type="password" id="senha" name="senha" required placeholder="Mínimo 8 caracteres">
+                        <i class="fas fa-eye" onclick="togglePassword('senha')"></i>
+                    </div>
+                    <div class="form-error" id="senhaError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmarSenha">Confirmar Senha</label>
+                    <div class="password-toggle">
+                        <input type="password" id="confirmarSenha" name="confirmarSenha" required placeholder="Confirme sua senha">
+                        <i class="fas fa-eye" onclick="togglePassword('confirmarSenha')"></i>
+                    </div>
+                    <div class="form-error" id="confirmarSenhaError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="linkReferido">Link de Referência (Opcional)</label>
+                    <input type="text" id="linkReferido" name="linkReferido" placeholder="Link de convite">
+                    <div class="form-success" id="linkReferidoSuccess"></div>
+                </div>
+
+                <button type="submit" class="auth-btn" id="submitBtn">
+                    Criar Conta
+                </button>
+
+                <div class="loading" id="loading">
+                    <i class="fas fa-spinner"></i> Criando conta...
+                </div>
+            </form>
+
+            <div class="auth-links">
+                <p>Já tem uma conta? <a href="/login">Faça login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBu-bcX5UcyWf4St_Fez4G9oEiiXELmrhc",
+            authDomain: "dfm---market.firebaseapp.com",
+            projectId: "dfm---market",
+            storageBucket: "dfm---market.appspot.com",
+            messagingSenderId: "299859022127",
+            appId: "1:299859022127:web:f3711a9f9ef0b8dc7b51da"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Função para alternar visibilidade da senha
+        window.togglePassword = function(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = field.nextElementSibling;
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                field.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        };
+
+        // Função para mostrar erro
+        function showError(fieldId, message) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Função para limpar erro
+        function clearError(fieldId) {
+            const errorDiv = document.getElementById(fieldId + 'Error');
+            errorDiv.style.display = 'none';
+        }
+
+        // Função para validar telefone
+        function validarTelefone(telefone) {
+            const telefoneRegex = /^\+244\s?\d{9}$/;
+            return telefoneRegex.test(telefone);
+        }
+
+        // Função para validar senha
+        function validarSenha(senha) {
+            return senha.length >= 8;
+        }
+
+        // Função para validar email
+        function validarEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Verificar link de referência na URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get('ref');
+        if (ref) {
+            document.getElementById('linkReferido').value = ref;
+            document.getElementById('linkReferidoSuccess').textContent = 'Link de referência detectado!';
+            document.getElementById('linkReferidoSuccess').style.display = 'block';
+        }
+
+        // Manipular envio do formulário
+        document.getElementById('registroForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Limpar erros anteriores
+            clearError('email');
+            clearError('telefone');
+            clearError('senha');
+            clearError('confirmarSenha');
+
+            // Obter valores dos campos
+            const email = document.getElementById('email').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const senha = document.getElementById('senha').value;
+            const confirmarSenha = document.getElementById('confirmarSenha').value;
+            const linkReferido = document.getElementById('linkReferido').value.trim();
+
+            // Validações
+            let hasError = false;
+
+            if (!validarEmail(email)) {
+                showError('email', 'Por favor, insira um e-mail válido');
+                hasError = true;
+            }
+
+            if (!validarTelefone(telefone)) {
+                showError('telefone', 'Telefone deve começar com +244 e ter 9 dígitos');
+                hasError = true;
+            }
+
+            if (!validarSenha(senha)) {
+                showError('senha', 'A senha deve ter pelo menos 8 caracteres');
+                hasError = true;
+            }
+
+            if (senha !== confirmarSenha) {
+                showError('confirmarSenha', 'As senhas não coincidem');
+                hasError = true;
+            }
+
+            if (hasError) {
+                return;
+            }
+
+            // Mostrar loading
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            submitBtn.disabled = true;
+            submitBtn.style.display = 'none';
+            loading.style.display = 'block';
+
+            try {
+                // Criar usuário no Firebase
+                const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+                const user = userCredential.user;
+
+                // Registrar no backend
+                const response = await fetch('/api/registro', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email,
+                        telefone,
+                        senha,
+                        confirmarSenha,
+                        linkReferido
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Salvar token
+                    localStorage.setItem('dfm_token', data.token || 'firebase_user_' + user.uid);
+                    localStorage.setItem('dfm_user', JSON.stringify({
+                        id: data.userId || user.uid,
+                        email: user.email,
+                        telefone: telefone
+                    }));
+
+                    // Mostrar sucesso
+                    alert('Conta criada com sucesso! Você recebeu 400 Kz de bônus.');
+                    
+                    // Redirecionar para dashboard
+                    window.location.href = '/dashboard';
+                } else {
+                    throw new Error(data.error || 'Erro ao criar conta');
+                }
+
+            } catch (error) {
+                console.error('Erro no registro:', error);
+                
+                let errorMessage = 'Erro ao criar conta';
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'Este e-mail já está em uso';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'A senha é muito fraca';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'E-mail inválido';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+
+                alert(errorMessage);
+            } finally {
+                // Esconder loading
+                submitBtn.disabled = false;
+                submitBtn.style.display = 'block';
+                loading.style.display = 'none';
+            }
+        });
+
+        // Validação em tempo real
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value.trim();
+            if (email && !validarEmail(email)) {
+                showError('email', 'Por favor, insira um e-mail válido');
+            } else {
+                clearError('email');
+            }
+        });
+
+        document.getElementById('telefone').addEventListener('blur', function() {
+            const telefone = this.value.trim();
+            if (telefone && !validarTelefone(telefone)) {
+                showError('telefone', 'Telefone deve começar com +244 e ter 9 dígitos');
+            } else {
+                clearError('telefone');
+            }
+        });
+
+        document.getElementById('senha').addEventListener('blur', function() {
+            const senha = this.value;
+            if (senha && !validarSenha(senha)) {
+                showError('senha', 'A senha deve ter pelo menos 8 caracteres');
+            } else {
+                clearError('senha');
+            }
+        });
+
+        document.getElementById('confirmarSenha').addEventListener('blur', function() {
+            const senha = document.getElementById('senha').value;
+            const confirmarSenha = this.value;
+            if (confirmarSenha && senha !== confirmarSenha) {
+                showError('confirmarSenha', 'As senhas não coincidem');
+            } else {
+                clearError('confirmarSenha');
+            }
+        });
+
+        // Máscara para telefone
+        document.getElementById('telefone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length > 0 && !value.startsWith('244')) {
+                value = '244' + value;
+            }
+            
+            if (value.length > 3) {
+                value = '+' + value.substring(0, 3) + ' ' + value.substring(3);
+            }
+            
+            if (value.length > 7) {
+                value = value.substring(0, 7) + ' ' + value.substring(7);
+            }
+            
+            if (value.length > 11) {
+                value = value.substring(0, 11) + ' ' + value.substring(11);
+            }
+            
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html> 
