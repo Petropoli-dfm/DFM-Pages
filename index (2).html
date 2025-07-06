@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DFM - Plataforma de Investimentos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            background-color: #111;
+            color: #FFD700;
+        }
+        
+        .auth-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #FFD700;
+        }
+        
+        .level-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #FFD700;
+            transition: all 0.3s ease;
+        }
+        
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn-gold {
+            background-color: #FFD700;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .btn-gold:hover {
+            background-color: #FFC000;
+        }
+        
+        .input-gold {
+            background: transparent;
+            border: 1px solid #FFD700;
+            color: #FFD700;
+        }
+        
+        .input-gold:focus {
+            outline: none;
+            border-color: #FFC000;
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
+        }
+        
+        .sidebar {
+            background: rgba(0, 0, 0, 0.9);
+            border-right: 1px solid #FFD700;
+        }
+        
+        .dashboard-card {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #FFD700;
+        }
+        
+        .balance-badge {
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            color: #000;
+        }
+        
+        .loading-spinner {
+            border-top-color: #FFD700;
+        }
+        
+        .referral-link {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px dashed #FFD700;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-80">
+        <div class="auth-container w-full max-w-md rounded-lg shadow-lg p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">DFM</h2>
+                <button id="close-auth-modal" class="text-xl">&times;</button>
+            </div>
+            
+            <div id="auth-tabs" class="flex mb-6 border-b border-yellow-600">
+                <button id="login-tab" class="px-4 py-2 font-medium border-b-2 border-yellow-500">Login</button>
+                <button id="register-tab" class="px-4 py-2 font-medium text-yellow-400">Registrar</button>
+            </div>
+            
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="login-email" class="block mb-1">E-mail/Número (+244)</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-yellow-500">
+                            +244
+                        </div>
+                        <input type="text" id="login-email" class="input-gold w-full rounded-md py-2 pl-12 pr-3" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="login-password" class="block mb-1">Senha</label>
+                    <div class="relative">
+                        <input type="password" id="login-password" class="input-gold w-full rounded-md py-2 px-3" required minlength="8">
+                        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-yellow-500 toggle-password">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-gold w-full py-2 rounded-md font-bold">Entrar</button>
+                
+                <div class="text-center text-sm">
+                    <a href="#" class="text-yellow-400 hover:underline">Esqueceu a senha?</a>
+                </div>
+            </form>
+            
+            <form id="register-form" class="space-y-4 hidden">
+                <div>
+                    <label for="register-name" class="block mb-1">Nome Completo</label>
+                    <input type="text" id="register-name" class="input-gold w-full rounded-md py-2 px-3" required>
+                </div>
+                
+                <div>
+                    <label for="register-email" class="block mb-1">E-mail</label>
+                    <input type="email" id="register-email" class="input-gold w-full rounded-md py-2 px-3" required>
+                </div>
+                
+                <div>
+                    <label for="register-phone" class="block mb-1">Telefone (+244)</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-yellow-500">
+                            +244
+                        </div>
+                        <input type="tel" id="register-phone" class="input-gold w-full rounded-md py-2 pl-12 pr-3" required>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="register-password" class="block mb-1">Senha (mínimo 8 caracteres)</label>
+                    <div class="relative">
+                        <input type="password" id="register-password" class="input-gold w-full rounded-md py-2 px-3" required minlength="8">
+                        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-yellow-500 toggle-password">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="register-confirm-password" class="block mb-1">Confirmar Senha</label>
+                    <div class="relative">
+                        <input type="password" id="register-confirm-password" class="input-gold w-full rounded-md py-2 px-3" required minlength="8">
+                        <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-yellow-500 toggle-password">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center">
+                    <input type="checkbox" id="register-terms" class="mr-2" required>
+                    <label for="register-terms" class="text-sm">Li e aceito os Termos e Condições</label>
+                </div>
+                
+                <button type="submit" class="btn-gold w-full py-2 rounded-md font-bold">Registrar</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Main App -->
+    <div id="app-container" class="hidden min-h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar fixed inset-y-0 left-0 w-64 p-4 hidden md:block">
+            <div class="flex items-center mb-8">
+                <h1 class="text-2xl font-bold">DFM</h1>
+                <span class="ml-2 text-xs bg-yellow-500 text-black px-2 py-1 rounded-full">2025</span>
+            </div>
+            
+            <nav class="space-y-2">
+                <a href="#" class="block py-2 px-3 rounded-md hover:bg-yellow-900 flex items-center" data-page="dashboard">
+                    <i class="fas fa-home mr-2"></i> Dashboard
+                </a>
+                <a href="#" class="block py-2 px-3 rounded-md hover:bg-yellow-900 flex items-center" data-page="levels">
+                    <i class="fas fa-chart-line mr-2"></i> Níveis de Investimento
+                </a>
+                <a href="#" class="block py-2 px-3 rounded-md hover:bg-yellow-900 flex items-center" data-page="deposit">
+                    <i class="fas fa-money-bill-wave mr-2"></i> Carregamento
+                </a>
+                <a href="#" class="block py-2 px-3 rounded-md hover:bg-yellow-900 flex items-center" data-page="withdraw">
+                    <i class="fas fa-wallet mr-2"></i> Saque
+                </a>
+                <a href="#" class="block py-2 px-3 rounded-md hover:bg-yellow-900 flex items-center" data-page="profile">
+                    <i class="fas fa-user mr-2"></i> Meu Perfil
+                </a>
+                <a href="#" class="block py-2 px-3 rounded-md hover:bg-yellow-900 flex items-center" data-page="referral">
+                    <i class="fas fa-link mr-2"></i> Programa de Indicação
+                </a>
+                <a href="#" class="block py-2 px-3 rounded-md hover:bg-yellow-900 flex items-center" data-page="support">
+                    <i class="fas fa-headset mr-2"></i> Suporte
+                </a>
+                <a href="#" id="logout-btn" class="block py-2 px-3 rounded-md hover:bg-yellow-900 text-red-400 flex items-center">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Sair
+                </a>
+            </nav>
+            
+            <div class="absolute bottom-4 left-4 right-4 text-xs text-yellow-600">
+                &copy; 2025 DFM - Todos os direitos reservados
+            </div>
+        </div>
+        
+        <!-- Mobile Header -->
+        <header class="md:hidden flex items-center justify-between p-4 border-b border-yellow-800">
+            <button id="mobile-menu-btn" class="text-2xl">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="text-xl font-bold">DFM</h1>
+            <div class="w-8"></div> <!-- Placeholder for balance -->
+        </header>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="fixed inset-0 z-40 bg-black bg-opacity-90 hidden md:hidden">
+            <div class="p-4">
+                <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-2xl font-bold">DFM</h1>
+                    <button id="close-mobile-menu" class="text-2xl">&times;</button>
+                </div>
+                
+                <nav class="space-y-4">
+                    <a href="#" class="block py-3 px-3 rounded-md hover:bg-yellow-900 text-xl" data-page="dashboard">
+                        <i class="fas fa-home mr-2"></i> Dashboard
+                    </a>
+                    <a href="#" class="block py-3 px-3 rounded-md hover:bg-yellow-900 text-xl" data-page="levels">
+                        <i class="fas fa-chart-line mr-2"></i> Níveis
+                    </a>
+                    <a href="#" class="block py-3 px-3 rounded-md hover:bg-yellow-900 text-xl" data-page="deposit">
+                        <i class="fas fa-money-bill-wave mr-2"></i> Carregamento
+                    </a>
+                    <a href="#" class="block py-3 px-3 rounded-md hover:bg-yellow-900 text-xl" data-page="withdraw">
+                        <i class="fas fa-wallet mr-2"></i> Saque
+                    </a>
+                    <a href="#" class="block py-3 px-3 rounded-md hover:bg-yellow-900 text-xl" data-page="profile">
+                        <i class="fas fa-user mr-2"></i> Perfil
+                    </a>
+                    <a href="#" class="block py-3 px-3 rounded-md hover:bg-yellow-900 text-xl" data-page="referral">
+                        <i class="fas fa-link mr-2"></i> Indicação
+                    </a>
+                    <a href="#" class="block py-3 px-3 rounded-md hover:bg-yellow-900 text-xl" data-page="support">
+                        <i class="fas fa-headset mr-2"></i> Suporte
+                    </a>
+                </nav>
+                
+                <div class="mt-8">
+                    <button id="mobile-logout-btn" class="w-full py-3 text-red-400 text-xl">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Sair
+                    </button>
+                </div>
+                
+                <div class="absolute bottom-4 left-4 right-4 text-xs text-yellow-600 text-center">
+                    &copy; 2025 DFM - Todos os direitos reservados
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="md:ml-64">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="p-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Dashboard</h2>
+                    <div class="flex items-center">
+                        <span class="mr-2">Saldo:</span>
+                        <span class="balance-badge px-3 py-1 rounded-full font-bold">400 kz</span>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                    <div class="dashboard-card p-4 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-medium">Total Investido</h3>
+                            <i class="fas fa-coins text-2xl text-yellow-500"></i>
+                        </div>
+                        <p class="text-2xl font-bold mt-2">0 kz</p>
+                    </div>
+                    
+                    <div class="dashboard-card p-4 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-medium">Lucro Total</h3>
+                            <i class="fas fa-chart-pie text-2xl text-yellow-500"></i>
+                        </div>
+                        <p class="text-2xl font-bold mt-2">0 kz</p>
+                    </div>
+                    
+                    <div class="dashboard-card p-4 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-medium">Total Retirado</h3>
+                            <i class="fas fa-wallet text-2xl text-yellow-500"></i>
+                        </div>
+                        <p class="text-2xl font-bold mt-2">0 kz</p>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card p-4 rounded-lg mb-8">
+                    <h3 class="text-xl font-bold mb-4">Meus Investimentos Ativos</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-yellow-800">
+                                    <th class="text-left py-2">Nível</th>
+                                    <th class="text-right py-2">Investimento</th>
+                                    <th class="text-right py-2">Lucro Diário</th>
+                                    <th class="text-right py-2">Dias Restantes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="active-investments">
+                                <tr>
+                                    <td colspan="4" class="py-4 text-center text-yellow-500">
+                                        Nenhum investimento ativo. Comece investindo em um dos níveis disponíveis.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card p-4 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4">Histórico de Ganhos</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-yellow-800">
+                                    <th class="text-left py-2">Data</th>
+                                    <th class="text-right py-2">Nível</th>
+                                    <th class="text-right py-2">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="earnings-history">
+                                <tr>
+                                    <td colspan="3" class="py-4 text-center text-yellow-500">
+                                        Nenhum ganho registrado ainda.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Levels Section -->
+            <section id="levels" class="p-4 hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Níveis de Investimento</h2>
+                    <div>
+                        <span class="balance-badge px-3 py-1 rounded-full font-bold">400 kz</span>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Level cards will be generated here by JavaScript -->
+                </div>
+            </section>
+            
+            <!-- Deposit Section -->
+            <section id="deposit" class="p-4 hidden">
+                <h2 class="text-2xl font-bold mb-6">Carregamento de Saldo</h2>
+                
+                <div class="max-w-lg mx-auto">
+                    <div class="dashboard-card p-6 rounded-lg mb-6">
+                        <h3 class="text-xl font-bold mb-4">Método de Pagamento</h3>
+                        
+                        <div class="mb-4">
+                            <label class="block mb-2">Entidade</label>
+                            <div class="flex">
+                                <input type="text" value="10116" class="input-gold w-full rounded-l-md py-2 px-3" readonly>
+                                <button class="btn-gold rounded-r-md px-3 py-2" id="copy-entity">
+                                    <i class="far fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="block mb-2">Referência</label>
+                            <div class="flex">
+                                <input type="text" value="942345333" class="input-gold w-full rounded-l-md py-2 px-3" readonly>
+                                <button class="btn-gold rounded-r-md px-3 py-2" id="copy-reference">
+                                    <i class="far fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <p class="text-sm text-yellow-400 mb-4">Use esta referência para fazer o pagamento através da sua conta bancária ou terminal de pagamento.</p>
+                    </div>
+                    
+                    <div class="dashboard-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">Enviar Comprovante</h3>
+                        
+                        <form id="receipt-form">
+                            <div class="mb-4">
+                                <label for="deposit-amount" class="block mb-2">Valor Depositado (kz)</label>
+                                <input type="number" id="deposit-amount" class="input-gold w-full rounded-md py-2 px-3" min="4000" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="deposit-level" class="block mb-2">Nível que deseja comprar</label>
+                                <select id="deposit-level" class="input-gold w-full rounded-md py-2 px-3" required>
+                                    <option value="">Selecione um nível</option>
+                                    <!-- Options will be added by JavaScript -->
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="receipt-file" class="block mb-2">Comprovante de Pagamento</label>
+                                <div class="relative">
+                                    <input type="file" id="receipt-file" class="hidden" accept="image/*,.pdf" required>
+                                    <label for="receipt-file" class="input-gold w-full rounded-md py-2 px-3 block cursor-pointer hover:border-yellow-400">
+                                        <span id="file-name">Nenhum arquivo selecionado</span>
+                                    </label>
+                                    <button type="button" class="absolute top-0 right-0 h-full px-3 flex items-center text-yellow-500">
+                                        <i class="fas fa-paperclip"></i>
+                                    </button>
+                                </div>
+                                <p class="text-xs text-yellow-400 mt-1">Formatos aceitos: JPG, PNG, PDF (máx. 5MB)</p>
+                            </div>
+                            
+                            <button type="submit" class="btn-gold w-full py-3 rounded-md font-bold">Enviar Comprovante</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Withdraw Section -->
+            <section id="withdraw" class="p-4 hidden">
+                <h2 class="text-2xl font-bold mb-6">Solicitar Saque</h2>
+                
+                <div class="max-w-lg mx-auto">
+                    <div class="dashboard-card p-6 rounded-lg">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold">Saldo Disponível</h3>
+                            <span class="balance-badge px-3 py-1 rounded-full font-bold">400 kz</span>
+                        </div>
+                        
+                        <p class="text-sm text-yellow-400 mb-6">Valor mínimo para saque: <span class="font-bold">3.500 kz</span></p>
+                        
+                        <form id="withdraw-form">
+                            <div class="mb-4">
+                                <label for="withdraw-bank" class="block mb-2">Banco</label>
+                                <select id="withdraw-bank" class="input-gold w-full rounded-md py-2 px-3" required>
+                                    <option value="">Selecione o seu banco</option>
+                                    <option value="BAI">BAI</option>
+                                    <option value="BFA">BFA</option>
+                                    <option value="BIC">BIC</option>
+                                    <option value="ATLÂNTICO">ATLÂNTICO</option>
+                                    <option value="BCI">BCI</option>
+                                    <option value="YETU">YETU</option>
+                                    <option value="BPC">BPC</option>
+                                    <option value="ECONÔMICO">ECONÔMICO</option>
+                                    <option value="KEVE">KEVE</option>
+                                    <option value="SOL">SOL</option>
+                                    <option value="UNITEL MONEY">UNITEL MONEY</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="withdraw-account-number" class="block mb-2">Número da Conta/Telefone</label>
+                                <input type="text" id="withdraw-account-number" class="input-gold w-full rounded-md py-2 px-3" minlength="9" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="withdraw-account-name" class="block mb-2">Nome do Titular</label>
+                                <input type="text" id="withdraw-account-name" class="input-gold w-full rounded-md py-2 px-3" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="withdraw-amount" class="block mb-2">Valor do Saque (kz)</label>
+                                <input type="number" id="withdraw-amount" class="input-gold w-full rounded-md py-2 px-3" min="3500" max="400" required>
+                                <p class="text-xs text-yellow-400 mt-1">Valor disponível: 400 kz</p>
+                            </div>
+                            
+                            <button type="submit" class="btn-gold w-full py-3 rounded-md font-bold mt-4">Solicitar Saque</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Profile Section -->
+            <section id="profile" class="p-4 hidden">
+                <h2 class="text-2xl font-bold mb-6">Meu Perfil</h2>
+                
+                <div class="max-w-lg mx-auto">
+                    <div class="dashboard-card p-6 rounded-lg mb-6">
+                        <div class="flex justify-center mb-6">
+                            <div class="relative">
+                                <div class="w-24 h-24 rounded-full bg-yellow-700 flex items-center justify-center text-3xl">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <button class="absolute bottom-0 right-0 bg-yellow-500 text-black rounded-full w-8 h-8 flex items-center justify-center">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <form id="profile-form">
+                            <div class="mb-4">
+                                <label for="profile-name" class="block mb-2">Nome Completo</label>
+                                <input type="text" id="profile-name" class="input-gold w-full rounded-md py-2 px-3" value="Novo Usuário" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="profile-email" class="block mb-2">E-mail</label>
+                                <input type="email" id="profile-email" class="input-gold w-full rounded-md py-2 px-3" value="usuario@exemplo.com" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="profile-phone" class="block mb-2">Telefone</label>
+                                <div class="flex">
+                                    <span class="input-gold rounded-l-md py-2 px-3 flex items-center">+244</span>
+                                    <input type="tel" id="profile-phone" class="input-gold w-full rounded-r-md py-2 px-3" value="900000000" required>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn-gold w-full py-3 rounded-md font-bold mt-4">Atualizar Perfil</button>
+                        </form>
+                    </div>
+                    
+                    <div class="dashboard-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">Alterar Senha</h3>
+                        
+                        <form id="change-password-form">
+                            <div class="mb-4">
+                                <label for="current-password" class="block mb-2">Senha Atual</label>
+                                <div class="relative">
+                                    <input type="password" id="current-password" class="input-gold w-full rounded-md py-2 px-3" required minlength="8">
+                                    <button type="button" class="absolute top-0 right-0 h-full px-3 flex items-center text-yellow-500 toggle-password">
+                                        <i class="far fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="new-password" class="block mb-2">Nova Senha (mínimo 8 caracteres)</label>
+                                <div class="relative">
+                                    <input type="password" id="new-password" class="input-gold w-full rounded-md py-2 px-3" required minlength="8">
+                                    <button type="button" class="absolute top-0 right-0 h-full px-3 flex items-center text-yellow-500 toggle-password">
+                                        <i class="far fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="confirm-new-password" class="block mb-2">Confirmar Nova Senha</label>
+                                <div class="relative">
+                                    <input type="password" id="confirm-new-password" class="input-gold w-full rounded-md py-2 px-3" required minlength="8">
+                                    <button type="button" class="absolute top-0 right-0 h-full px-3 flex items-center text-yellow-500 toggle-password">
+                                        <i class="far fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn-gold w-full py-3 rounded-md font-bold mt-4">Alterar Senha</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Referral Section -->
+            <section id="referral" class="p-4 hidden">
+                <h2 class="text-2xl font-bold mb-6">Programa de Indicação</h2>
+                
+                <div class="max-w-4xl mx-auto">
+                    <div class="dashboard-card p-6 rounded-lg mb-6">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                            <div class="mb-4 md:mb-0 md:mr-6">
+                                <h3 class="text-xl font-bold mb-2">Ganhe 600 kz por cada indicação!</h3>
+                                <p class="text-sm text-yellow-400">
+                                    Compartilhe seu link exclusivo e ganhe 600 kz quando seus amigos se registrarem 
+                                    e fizerem seu primeiro carregamento.
+                                </p>
+                            </div>
+                            
+                            <div class="referral-link p-3 rounded-md bg-opacity-70">
+                                <div class="flex">
+                                    <input type="text" id="referral-link" value="https://dfm.com/registro?ref=ABC123" class="input-gold flex-grow rounded-l-md py-2 px-3" readonly>
+                                    <button id="copy-referral-link" class="btn-gold rounded-r-md px-3 py-2">
+                                        <i class="far fa-copy"></i>
+                                    </button>
+                                </div>
+                                <div class="flex justify-center mt-3 space-x-4">
+                                    <button class="text-2xl text-blue-500 hover:text-blue-400">
+                                        <i class="fab fa-facebook"></i>
+                                    </button>
+                                    <button class="text-2xl text-blue-400 hover:text-blue-300">
+                                        <i class="fab fa-twitter"></i>
+                                    </button>
+                                    <button class="text-2xl text-red-500 hover:text-red-400">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </button>
+                                    <button class="text-2xl text-gray-300 hover:text-white">
+                                        <i class="far fa-envelope"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="dashboard-card p-6 rounded-lg">
+                            <h3 class="text-xl font-bold mb-4">Suas Indicações</h3>
+                            
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold">0</p>
+                                    <p class="text-sm text-yellow-400">Total</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold">0</p>
+                                    <p class="text-sm text-yellow-400">Ativas</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold">0 kz</p>
+                                    <p class="text-sm text-yellow-400">Ganhos</p>
+                                </div>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="border-b border-yellow-800">
+                                            <th class="text-left py-2">Indicado</th>
+                                            <th class="text-right py-2">Data</th>
+                                            <th class="text-right py-2">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="referral-list">
+                                        <tr>
+                                            <td colspan="3" class="py-4 text-center text-yellow-500">
+                                                Nenhuma indicação registrada ainda.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card p-6 rounded-lg">
+                            <h3 class="text-xl font-bold mb-4">Como funciona</h3>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="bg-yellow-500 text-black rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">1</div>
+                                    <p>Compartilhe seu link de indicação com amigos e familiares.</p>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-yellow-500 text-black rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">2</div>
+                                    <p>Eles devem se registrar usando seu link e fazer um primeiro carregamento em qualquer nível.</p>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-yellow-500 text-black rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">3</div>
+                                    <p>Você recebe automaticamente 600 kz na sua conta assim que o depósito for confirmado.</p>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <div class="bg-yellow-500 text-black rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-1 flex-shrink-0">4</div>
+                                    <p>Não há limite para o número de indicações que você pode fazer.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Support Section -->
+            <section id="support" class="p-4 hidden">
+                <h2 class="text-2xl font-bold mb-6">Suporte e Atendimento</h2>
+                
+                <div class="max-w-4xl mx-auto">
+                    <div class="dashboard-card p-6 rounded-lg mb-6">
+                        <h3 class="text-xl font-bold mb-4">Entre em contato com nosso suporte</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-bold mb-2 flex items-center">
+                                    <i class="fas fa-envelope mr-2 text-yellow-500"></i> E-mail
+                                </h4>
+                                <p class="mb-4">suporte@dfm.com</p>
+                                
+                                <div class="flex">
+                                    <a href="mailto:suporte@dfm.com" class="btn-gold px-4 py-2 rounded-md text-sm">
+                                        <i class="fas fa-paper-plane mr-1"></i> Enviar e-mail
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-bold mb-2 flex items-center">
+                                    <i class="fas fa-phone-alt mr-2 text-yellow-500"></i> Telefone/WhatsApp
+                                </h4>
+                                <p class="mb-4">+244 925 395 361</p>
+                                
+                                <div class="flex space-x-2">
+                                    <a href="tel:+244925395361" class="btn-gold px-4 py-2 rounded-md text-sm">
+                                        <i class="fas fa-phone mr-1"></i> Ligar
+                                    </a>
+                                    <a href="https://wa.me/244925395361" target="_blank" class="btn-gold px-4 py-2 rounded-md text-sm">
+                                        <i class="fab fa-whatsapp mr-1"></i> WhatsApp
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">Perguntas Frequentes</h3>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <button class="faq-question w-full text-left flex justify-between items-center py-2 border-b border-yellow-800">
+                                    <span>Quanto tempo leva para meu depósito ser confirmado?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-answer hidden mt-2 ml-2 pb-2">
+                                    <p class="text-sm text-yellow-400">
+                                        Após o envio do comprovante, nossa equipe verifica manualmente o pagamento. 
+                                        Isso geralmente leva de 1 a 4 horas durante o horário comercial (8h às 20h). 
+                                        Fora deste horário, pode levar mais tempo.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <button class="faq-question w-full text-left flex justify-between items-center py-2 border-b border-yellow-800">
+                                    <span>Quando recebo meus ganhos diários?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-answer hidden mt-2 ml-2 pb-2">
+                                    <p class="text-sm text-yellow-400">
+                                        Os ganhos são creditados automaticamente em sua conta todos os dias às 00:00 (meia-noite) 
+                                        a partir de 24 horas após a confirmação do seu investimento.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <button class="faq-question w-full text-left flex justify-between items-center py-2 border-b border-yellow-800">
+                                    <span>Quanto tempo leva para processar um saque?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-answer hidden mt-2 ml-2 pb-2">
+                                    <p class="text-sm text-yellow-400">
+                                        Os saques são processados dentro de 24 horas (dias úteis). Durante finais de semana e feriados, 
+                                        pode levar até 48 horas para o valor ser transferido para sua conta.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <button class="faq-question w-full text-left flex justify-between items-center py-2 border-b border-yellow-800">
+                                    <span>Posso investir em vários níveis ao mesmo tempo?</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="faq-answer hidden mt-2 ml-2 pb-2">
+                                    <p class="text-sm text-yellow-400">
+                                        Sim, você pode investir em quantos níveis desejar simultaneamente. Cada investimento funciona 
+                                        de forma independente, gerando seus próprios ganhos diários.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 hidden">
+        <div class="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+    
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-yellow-900 text-white px-4 py-2 rounded-md shadow-lg hidden z-50 max-w-xs"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mock data - In a real app, this would come from a database
+            const niveis = [
+                {"nivel": 1, "compra": 4000, "ganho": 500, "dias": 35},
+                {"nivel": 2, "compra": 10000, "ganho": 1200, "dias": 35},
+                {"nivel": 3, "compra": 15000, "ganho": 1600, "dias": 50},
+                {"nivel": 4, "compra": 25000, "ganho": 4000, "dias": 50},
+                {"nivel": 5, "compra": 30000, "ganho": 5000, "dias": 50},
+                {"nivel": 6, "compra": 45000, "ganho": 6500, "dias": 50},
+                {"nivel": 7, "compra": 50000, "ganho": 8000, "dias": 50},
+                {"nivel": 8, "compra": 60000, "ganho": 11200, "dias": 40},
+                {"nivel": 9, "compra": 100000, "ganho": 13500, "dias": 40},
+                {"nivel": 10, "compra": 120000, "ganho": 14200, "dias": 40},
+                {"nivel": 11, "compra": 130000, "ganho": 20000, "dias": 40}
+            ];
+            
+            // UI Elements
+            const authModal = document.getElementById('auth-modal');
+            const appContainer = document.getElementById('app-container');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const toast = document.getElementById('toast');
+            
+            // Auth elements
+            const loginTab = document.getElementById('login-tab');
+            const registerTab = document.getElementById('register-tab');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const closeAuthModal = document.getElementById('close-auth-modal');
+            
+            // Navigation elements
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const closeMobileMenu = document.getElementById('close-mobile-menu');
+            const logoutBtn = document.getElementById('logout-btn');
+            const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+            
+            // Sections
+            const sections = {
+                'dashboard': document.getElementById('dashboard'),
+                'levels': document.getElementById('levels'),
+                'deposit': document.getElementById('deposit'),
+                'withdraw': document.getElementById('withdraw'),
+                'profile': document.getElementById('profile'),
+                'referral': document.getElementById('referral'),
+                'support': document.getElementById('support')
+            };
+            
+            // Show auth modal by default
+            authModal.classList.remove('hidden');
+            
+            // Initialize the database connection
+            // In a real app, this would connect to MySQL
+            let db = {
+                users: [
+                    {
+                        id: 1,
+                        name: "Novo Usuário",
+                        email: "usuario@exemplo.com",
+                        phone: "900000000",
+                        password: "password123",
+                        balance: 400,
+                        invested: 0,
+                        earned: 0,
+                        withdrawn: 0,
+                        referralCode: "ABC123",
+                        activeInvestments: [],
+                        earningsHistory: []
+                    }
+                ],
+                currentUser: null
+            };
+            
+            // Helper functions
+            function showToast(message, isError = false) {
+                toast.textContent = message;
+                toast.className = isError ? 
+                    'fixed bottom-4 right-4 bg-red-900 text-white px-4 py-2 rounded-md shadow-lg z-50 max-w-xs' : 
+                    'fixed bottom-4 right-4 bg-yellow-900 text-white px-4 py-2 rounded-md shadow-lg z-50 max-w-xs';
+                toast.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 5000);
+            }
+            
+            function showLoading() {
+                loadingSpinner.classList.remove('hidden');
+            }
+            
+            function hideLoading() {
+                loadingSpinner.classList.add('hidden');
+            }
+            
+            function switchTab(tab) {
+                if (tab === 'login') {
+                    loginTab.classList.add('border-b-2', 'border-yellow-500');
+                    loginTab.classList.remove('text-yellow-400');
+                    registerTab.classList.add('text-yellow-400');
+                    registerTab.classList.remove('border-b-2', 'border-yellow-500');
+                    
+                    loginForm.classList.remove('hidden');
+                    registerForm.classList.add('hidden');
+                } else {
+                    registerTab.classList.add('border-b-2', 'border-yellow-500');
+                    registerTab.classList.remove('text-yellow-400');
+                    loginTab.classList.add('text-yellow-400');
+                    loginTab.classList.remove('border-b-2', 'border-yellow-500');
+                    
+                    registerForm.classList.remove('hidden');
+                    loginForm.classList.add('hidden');
+                }
+            }
+            
+            function navigateTo(section) {
+                Object.values(sections).forEach(s => s.classList.add('hidden'));
+                sections[section].classList.remove('hidden');
+                
+                // Generate level cards if needed
+                if (section === 'levels' && document.querySelector('#levels .grid').children.length === 0) {
+                    generateLevelCards();
+                }
+                
+                // Generate deposit level options if needed
+                if (section === 'deposit' && document.getElementById('deposit-level').options.length <= 1) {
+                    generateDepositLevelOptions();
+                }
+                
+                // Close mobile menu if open
+                mobileMenu.classList.add('hidden');
+            }
+            
+            function generateLevelCards() {
+                const container = document.querySelector('#levels .grid');
+                container.innerHTML = '';
+                
+                niveis.forEach(nivel => {
+                    const card = document.createElement('div');
+                    card.className = 'level-card p-5 rounded-lg';
+                    
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="text-xl font-bold">Nível ${nivel.nivel}</h3>
+                            <span class="bg-yellow-500 text-black px-2 py-1 rounded text-sm font-bold">${nivel.dias} dias</span>
+                        </div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between">
+                                <span class="text-yellow-400">Investimento:</span>
+                                <span class="font-bold">${nivel.compra.toLocaleString()} kz</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-yellow-400">Ganho Diário:</span>
+                                <span class="font-bold">${nivel.ganho.toLocaleString()} kz</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-yellow-400">Total Esperado:</span>
+                                <span class="font-bold">${(nivel.ganho * nivel.dias).toLocaleString()} kz</span>
+                            </div>
+                        </div>
+                        
+                        <button data-level="${nivel.nivel}" class="invest-btn btn-gold w-full py-2 rounded-md font-bold">
+                            Investir Agora
+                        </button>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+            }
+            
+            function generateDepositLevelOptions() {
+                const select = document.getElementById('deposit-level');
+                
+                niveis.forEach(nivel => {
+                    const option = document.createElement('option');
+                    option.value = nivel.nivel;
+                    option.textContent = `Nível ${nivel.nivel} - ${nivel.compra.toLocaleString()} kz (Ganho: ${nivel.ganho.toLocaleString()} kz/dia)`;
+                    select.appendChild(option);
+                });
+            }
+            
+            // Event listeners
+            loginTab.addEventListener('click', () => switchTab('login'));
+            registerTab.addEventListener('click', () => switchTab('register'));
+            
+            closeAuthModal.addEventListener('click', () => {
+                authModal.classList.add('hidden');
+            });
+            
+            // Toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.innerHTML = '<i class="far fa-eye-slash"></i>';
+                    } else {
+                        input.type = 'password';
+                        this.innerHTML = '<i class="far fa-eye"></i>';
+                    }
+                });
+            });
+            
+            // Login form
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const loginEmail = document.getElementById('login-email').value;
+                const loginPassword = document.getElementById('login-password').value;
+                
+                showLoading();
+                
+                // Simulate API call
+                setTimeout(() => {
+                    const user = db.users.find(u => 
+                        (u.email === loginEmail || u.phone === loginEmail) && 
+                        u.password === loginPassword
+                    );
+                    
+                    if (user) {
+                        db.currentUser = user;
+                        authModal.classList.add('hidden');
+                        appContainer.classList.remove('hidden');
+                        navigateTo('dashboard');
+                        
+                        showToast('Login realizado com sucesso!');
+                    } else {
+                        showToast('E-mail/número ou senha incorretos', true);
+                    }
+                    
+                    hideLoading();
+                }, 1000);
+            });
+            
+            // Register form
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('register-name').value;
+                const email = document.getElementById('register-email').value;
+                const phone = document.getElementById('register-phone').value;
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+                
+                if (password !== confirmPassword) {
+                    showToast('As senhas não coincidem', true);
+                    return;
+                }
+                
+                showLoading();
+                
+                // Simulate API call
+                setTimeout(() => {
+                    const newUser = {
+                        id: db.users.length + 1,
+                        name,
+                        email,
+                        phone,
+                        password,
+                        balance: 0,
+                        invested: 0,
+                        earned: 0,
+                        withdrawn: 0,
+                        referralCode: Math.random().toString(36).substr(2, 6).toUpperCase(),
+                        activeInvestments: [],
+                        earningsHistory: []
+                    };
+                    
+                    db.users.push(newUser);
+                    db.currentUser = newUser;
+                    
+                    authModal.classList.add('hidden');
+                    appContainer.classList.remove('hidden');
+                    navigateTo('dashboard');
+                    
+                    showToast('Conta criada com sucesso!');
+                    hideLoading();
+                }, 1500);
+            });
+            
+            // Navigation
+            document.querySelectorAll('[data-page]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navigateTo(this.dataset.page);
+                });
+            });
+            
+            // Mobile menu
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.remove('hidden');
+            });
+            
+            closeMobileMenu.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+            
+            // Logout
+            logoutBtn.addEventListener('click', () => {
+                db.currentUser = null;
+                appContainer.classList.add('hidden');
+                authModal.classList.remove('hidden');
+                switchTab('login');
+                
+                showToast('Você saiu da sua conta');
+            });
+            
+            mobileLogoutBtn.addEventListener('click', () => {
+                db.currentUser = null;
+                appContainer.classList.add('hidden');
+                authModal.classList.remove('hidden');
+                switchTab('login');
+                mobileMenu.classList.add('hidden');
+                
+                showToast('Você saiu da sua conta');
+            });
+            
+            // Investment buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('invest-btn')) {
+                    const level = parseInt(e.target.dataset.level);
+                    navigateTo('deposit');
+                    
+                    // Auto-select the level in dropdown
+                    document.getElementById('deposit-level').value = level;
+                    document.getElementById('deposit-amount').value = niveis.find(n => n.nivel === level).compra;
+                }
+            });
+            
+            // File input
+            document.getElementById('receipt-file').addEventListener('change', function(e) {
+                const fileName = e.target.files.length ? e.target.files[0].name : 'Nenhum arquivo selecionado';
+                document.getElementById('file-name').textContent = fileName;
+            });
+            
+            // Copy buttons
+            document.getElementById('copy-entity').addEventListener('click', function() {
+                navigator.clipboard.writeText('10116');
+                showToast('Entidade copiada!');
+            });
+            
+            document.getElementById('copy-reference').addEventListener('click', function() {
+                navigator.clipboard.writeText('942345333');
+                showToast('Referência copiada!');
+            });
+            
+            document.getElementById('copy-referral-link').addEventListener('click', function() {
+                navigator.clipboard.writeText(document.getElementById('referral-link').value);
+                showToast('Link de indicação copiado!');
+            });
+            
+            // Deposit form
+            document.getElementById('receipt-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const amount = parseInt(document.getElementById('deposit-amount').value);
+                const level = parseInt(document.getElementById('deposit-level').value);
+                const fileInput = document.getElementById('receipt-file');
+                
+                if (!fileInput.files.length) {
+                    showToast('Por favor, selecione um comprovante', true);
+                    return;
+                }
+                
+                const levelInfo = niveis.find(n => n.nivel === level);
+                
+                if (amount < levelInfo.compra) {
+                    showToast(`O valor mínimo para o Nível ${level} é ${levelInfo.compra.toLocaleString()} kz`, true);
+                    return;
+                }
+                
+                showLoading();
+                
+                // Simulate API call
+                setTimeout(() => {
+                    const investment = {
+                        id: db.currentUser.activeInvestments.length + 1,
+                        level,
+                        amount: levelInfo.compra,
+                        dailyProfit: levelInfo.ganho,
+                        daysLeft: levelInfo.dias,
+                        startDate: new Date().toISOString()
+                    };
+                    
+                    db.currentUser.activeInvestments.push(investment);
+                    
+                    showToast(`Comprovante enviado para o Nível ${level}. Aguarde a confirmação.`);
+                    hideLoading();
+                    
+                    this.reset();
+                    document.getElementById('file-name').textContent = 'Nenhum arquivo selecionado';
+                    
+                    // Update UI
+                    updateInvestmentList();
+                }, 2000);
+            });
+            
+            // Withdraw form
+            document.getElementById('withdraw-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const bank = document.getElementById('withdraw-bank').value;
+                const accountNumber = document.getElementById('withdraw-account-number').value;
+                const accountName = document.getElementById('withdraw-account-name').value;
+                const amount = parseInt(document.getElementById('withdraw-amount').value);
+                
+                if (amount < 3500) {
+                    showToast('O valor mínimo para saque é 3.500 kz', true);
+                    return;
+                }
+                
+                if (amount > db.currentUser.balance) {
+                    showToast('Saldo insuficiente para este saque', true);
+                    return;
+                }
+                
+                showLoading();
+                
+                // Simulate API call
+                setTimeout(() => {
+                    db.currentUser.balance -= amount;
+                    db.currentUser.withdrawn += amount;
+                    
+                    document.querySelector('.balance-badge').textContent = `${db.currentUser.balance} kz`;
+                    
+                    showToast(`Saque de ${amount.toLocaleString()} kz solicitado com sucesso!`);
+                    hideLoading();
+                    
+                    this.reset();
+                    
+                    // Update max withdrawal amount
+                    document.getElementById('withdraw-amount').max = db.currentUser.balance;
+                    document.querySelector('#withdraw p.text-xs').textContent = `Valor disponível: ${db.currentUser.balance} kz`;
+                }, 2000);
+            });
+            
+            // Profile form
+            document.getElementById('profile-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('profile-name').value;
+                const email = document.getElementById('profile-email').value;
+                const phone = document.getElementById('profile-phone').value;
+                
+                showLoading();
+                
+                // Simulate API call
+                setTimeout(() => {
+                    db.currentUser.name = name;
+                    db.currentUser.email = email;
+                    db.currentUser.phone = phone;
+                    
+                    showToast('Perfil atualizado com sucesso!');
+                    hideLoading();
+                }, 1000);
+            });
+            
+            // Change password form
+            document.getElementById('change-password-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmNewPassword = document.getElementById('confirm-new-password').value;
+                
+                if (currentPassword !== db.currentUser.password) {
+                    showToast('Senha atual incorreta', true);
+                    return;
+                }
+                
+                if (newPassword !== confirmNewPassword) {
+                    showToast('As novas senhas não coincidem', true);
+                    return;
+                }
+                
+                showLoading();
+                
+                // Simulate API call
+                setTimeout(() => {
+                    db.currentUser.password = newPassword;
+                    
+                    showToast('Senha alterada com sucesso!');
+                    hideLoading();
+                    
+                    this.reset();
+                }, 1000);
+            });
+            
+            // FAQ accordion
+            document.querySelectorAll('.faq-question').forEach(question => {
+                question.addEventListener('click', function() {
+                    const answer = this.nextElementSibling;
+                    const icon = this.querySelector('i');
+                    
+                    answer.classList.toggle('hidden');
+                    icon.classList.toggle('fa-chevron-down');
+                    icon.classList.toggle('fa-chevron-up');
+                });
+            });
+            
+            // Helper function to update investment list
+            function updateInvestmentList() {
+                const container = document.getElementById('active-investments');
+                
+                if (db.currentUser.activeInvestments.length === 0) {
+                    container.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="py-4 text-center text-yellow-500">
+                                Nenhum investimento ativo. Comece investindo em um dos níveis disponíveis.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = '';
+                
+                db.currentUser.activeInvestments.forEach(investment => {
+                    const row = document.createElement('tr');
+                    row.className = 'border-b border-yellow-800';
+                    
+                    const levelInfo = niveis.find(n => n.nivel === investment.level);
+                    
+                    row.innerHTML = `
+                        <td class="py-2">Nível ${investment.level}</td>
+                        <td class="text-right py-2">${levelInfo.compra.toLocaleString()} kz</td>
+                        <td class="text-right py-2">${levelInfo.ganho.toLocaleString()} kz</td>
+                        <td class="text-right py-2">${investment.daysLeft}</td>
+                    `;
+                    
+                    container.appendChild(row);
+                });
+            }
+        });
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=DFM-Markt/angola23" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
